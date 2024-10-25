@@ -9,7 +9,7 @@ You can also include images in this folder and reference them in the markdown. E
 
 ## How it works
 
-Explain how your project works
+For this question, we were to design this 4×4 array multiplier using manual structural design. The inputs are 2 4-bit factors to be multiplied (called m and q) and we output the product.
 
 ## How to test
 
