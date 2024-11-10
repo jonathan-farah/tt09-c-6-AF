@@ -1,114 +1,52 @@
-`timescale 1ns / 1ps
+# SPDX-FileCopyrightText: © 2024 Tiny Tapeout
+# SPDX-License-Identifier: Apache-2.0
 
-module array_mult_tb;
+import cocotb
+from cocotb.clock import Clock
+from cocotb.triggers import ClockCycles
 
-// Inputs
-reg [3:0] m = 4'b0000;
-reg [3:0] q = 4'b0000;
 
-// Outputs
-wire [7:0] p_struct;
+@cocotb.test()
+async def test_project(dut):
+    dut._log.info("Start")
 
-// Reference
-reg [7:0] p_ref = 8'b00000000;
-integer failures = 0;
+    # Set the clock period to 10 us (100 KHz)
+    clock = Clock(dut.clk, 10, units="us")
+    cocotb.start_soon(clock.start())
 
-// Instantiate structural multiplier
-array_mult_structural dut_struct(
-	.m(m),
-	.q(q),
-	.p(p_struct)
-);
+    # Reset
+    dut._log.info("Reset")
+    dut.ena.value = 1
+    dut.ui_in.value = 0
+    dut.uio_in.value = 0
+    dut.rst_n.value = 0
+    await ClockCycles(dut.clk, 10)
+    dut.rst_n.value = 1
 
-// Stimulus
-initial begin
-	// Initialize Inputs (Test 0)
-	m = 4'b0000;
-	q = 4'b0000;
-	p_ref = 8'b00000000;
-	#10;
+    dut._log.info("Test project behavior")
 
-	// Test 1
-	m = 4'b0001;
-	q = 4'b0001;
-	p_ref = 8'b00000001;
-	#10;
+    # Set the input values you want to test
+    dut.ui_in.value = 0x42
+    
 
-	// Test 2
-	m = 4'b0010;
-	q = 4'b0010;
-	p_ref = 8'b00000100;
-	#10;
+    # Wait for one clock cycle to see the output values
+    await ClockCycles(dut.clk, 1)
 
-	// Test 3
-	m = 4'b1111;
-	q = 4'b1111;
-	p_ref = 8'b11100001;
-	#10;
-
-	// Test 4
-	m = 4'b1111;
-	q = 4'b0000;
-	p_ref = 8'b00000000;
-	#10;
-
-	// Test 5
-	m = 4'b1000;
-	q = 4'b0111;
-	p_ref = 8'b00111000;
-	#10;
-
-	// Test 6
-	m = 4'b0000;
-	q = 4'b0000;
-	p_ref = 8'b00000000;
-	#10;
-
-	// Test 7
-	m = 4'b0000;
-	q = 4'b0000;
-	p_ref = 8'b00000000;
-	#10;
-
-	// Test 8
-	m = 4'b0000;
-	q = 4'b0000;
-	p_ref = 8'b00000000;
-	#10;
-
-	// Test 9
-	m = 4'b0000;
-	q = 4'b0000;
-	p_ref = 8'b00000000;
-	#10;
-
-	// Test 10
-	m = 4'b0000;
-	q = 4'b0000;
-	p_ref = 8'b00000000;
-	#10;
-
-	// End of test
-
-	// Reporting
-	if (failures === 0) begin
-		$display("All tests passed");
-	end else begin
-		$display("%d tests failed", failures);
-	end
-	$finish;
-end
-
-// Evaluation
-reg check_timer = 1'b0;
-
-always #5 check_timer = ~check_timer;
-
-always @(posedge check_timer) begin
-	if (p_struct !== p_ref) begin
-		$display("Error: p_struct = %b, p_ref = %b", p_struct, p_ref);
-		failures = failures + 1;
-	end
-end
-
-endmodule
+    # The following assersion is just an example of how to check the output values.
+    # Change it to match the actual expected output of your module:
+    assert dut.uo_out.value == 0x08
+    
+    dut.ui_in.value = 0x32
+    await ClockCycles(dut.clk, 1)
+    assert dut.uo_out.value == 0x06
+    dut.ui_in.value = 0b'11111111
+    await ClockCycles(dut.clk, 1)
+    assert dut.uo_out.value == 225
+    dut.ui_in.value = 0b'00011111
+    await ClockCycles(dut.clk, 1)
+    assert dut.uo_out.value == 15
+    dut.ui_in.value = 0b'00110101
+    await ClockCycles(dut.clk, 1)
+    assert dut.uo_out.value == 0b'1111
+    # Keep testing the module by changing the input values, waiting for
+    # one or more clock cycles, and asserting the expected output valu
