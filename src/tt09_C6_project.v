@@ -17,8 +17,9 @@ module tt_um_C6_array_multiplier(
 );
 
     wire [3:0] m= ui_in[7:4];
-    wire [3:0] n= ui_in[3:0];
-    wire[7:0] j;
+    wire [3:0] q= ui_in[3:0];
+    wire[7:0] p;
+    array_mulr_structural stage(m,q,p);
   // All output pins must be assigned. If not used, assign to 0.
   assign uo_out  = j;  // Example: ou_out is the sum of ui_in and uio_in
   assign uio_out = 0;
@@ -26,6 +27,7 @@ module tt_um_C6_array_multiplier(
 
   // List all unused inputs to prevent warnings
     wire _unused = &{ena, clk, rst_n,uio_in, 1'b0};
+endmodule
 module array_mult_structural(m,q,p);
     input [3:0] m,q;
     output [7:0] p;
@@ -42,9 +44,6 @@ module array_mult_structural(m,q,p);
     add_4bit stage2 (w4,{C[1], partial2[3:1]},partial3,C[2]);
     
     assign p = {C[2], partial3, partial2[0], partial1[0],w1[0]};
-
-    
-endmodule
 endmodule
 module fulladd(
     input a,b,cin,
