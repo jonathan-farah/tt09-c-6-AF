@@ -28,6 +28,23 @@ module tt_um_C6_array_multiplier(
     wire _unused = &{ena, clk, rst_n,uio_in, 1'b0};
 
 endmodule
+module fulladd(
+    input a,b,cin,
+    output sum,carry
+);
+
+wire w1,w2,w3,w4;       //Internal connections
+
+xor(w1,a,b);
+xor(sum,w1,cin);        //Sum output
+
+and(w2,a,b);
+and(w3,b,cin);
+and(w4,cin,a);
+
+or(carry,w2,w3,w4);     //carry output
+
+endmodule
 module add_4bit(x,y,z,carry_out);
     input [3:0] x,y;
     output [3:0] z;
