@@ -1,40 +1,114 @@
-# SPDX-FileCopyrightText: © 2024 Tiny Tapeout
-# SPDX-License-Identifier: Apache-2.0
+`timescale 1ns / 1ps
 
-import cocotb
-from cocotb.clock import Clock
-from cocotb.triggers import ClockCycles
+module array_mult_tb;
 
+// Inputs
+reg [3:0] m = 4'b0000;
+reg [3:0] q = 4'b0000;
 
-@cocotb.test()
-async def test_project(dut):
-    dut._log.info("Start")
+// Outputs
+wire [7:0] p_struct;
 
-    # Set the clock period to 10 us (100 KHz)
-    clock = Clock(dut.clk, 10, units="us")
-    cocotb.start_soon(clock.start())
+// Reference
+reg [7:0] p_ref = 8'b00000000;
+integer failures = 0;
 
-    # Reset
-    dut._log.info("Reset")
-    dut.ena.value = 1
-    dut.ui_in.value = 0
-    dut.uio_in.value = 0
-    dut.rst_n.value = 0
-    await ClockCycles(dut.clk, 10)
-    dut.rst_n.value = 1
+// Instantiate structural multiplier
+array_mult_structural dut_struct(
+	.m(m),
+	.q(q),
+	.p(p_struct)
+);
 
-    dut._log.info("Test project behavior")
+// Stimulus
+initial begin
+	// Initialize Inputs (Test 0)
+	m = 4'b0000;
+	q = 4'b0000;
+	p_ref = 8'b00000000;
+	#10;
 
-    # Set the input values you want to test
-    dut.ui_in.value = 20
-    dut.uio_in.value = 30
+	// Test 1
+	m = 4'b0001;
+	q = 4'b0001;
+	p_ref = 8'b00000001;
+	#10;
 
-    # Wait for one clock cycle to see the output values
-    await ClockCycles(dut.clk, 1)
+	// Test 2
+	m = 4'b0010;
+	q = 4'b0010;
+	p_ref = 8'b00000100;
+	#10;
 
-    # The following assersion is just an example of how to check the output values.
-    # Change it to match the actual expected output of your module:
-    assert dut.uo_out.value == 50
+	// Test 3
+	m = 4'b1111;
+	q = 4'b1111;
+	p_ref = 8'b11100001;
+	#10;
 
-    # Keep testing the module by changing the input values, waiting for
-    # one or more clock cycles, and asserting the expected output values.
+	// Test 4
+	m = 4'b1111;
+	q = 4'b0000;
+	p_ref = 8'b00000000;
+	#10;
+
+	// Test 5
+	m = 4'b1000;
+	q = 4'b0111;
+	p_ref = 8'b00111000;
+	#10;
+
+	// Test 6
+	m = 4'b0000;
+	q = 4'b0000;
+	p_ref = 8'b00000000;
+	#10;
+
+	// Test 7
+	m = 4'b0000;
+	q = 4'b0000;
+	p_ref = 8'b00000000;
+	#10;
+
+	// Test 8
+	m = 4'b0000;
+	q = 4'b0000;
+	p_ref = 8'b00000000;
+	#10;
+
+	// Test 9
+	m = 4'b0000;
+	q = 4'b0000;
+	p_ref = 8'b00000000;
+	#10;
+
+	// Test 10
+	m = 4'b0000;
+	q = 4'b0000;
+	p_ref = 8'b00000000;
+	#10;
+
+	// End of test
+
+	// Reporting
+	if (failures === 0) begin
+		$display("All tests passed");
+	end else begin
+		$display("%d tests failed", failures);
+	end
+	$finish;
+end
+
+// Evaluation
+reg check_timer = 1'b0;
+
+always #5 check_timer = ~check_timer;
+
+always @(posedge check_timer) begin
+	if (p_struct !== p_ref) begin
+		$display("Error: p_struct = %b, p_ref = %b", p_struct, p_ref);
+		failures = failures + 1;
+	end
+end
+
+endmodule
