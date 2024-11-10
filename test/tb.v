@@ -28,7 +28,7 @@ module tb ();
 `endif
 
   // Replace tt_um_example with your module name:
-  tt_um_tt09_C6_array_multiplier(
+  tt_um_C6_array_multiplier(
 
       // Include power ports for the Gate Level test:
 `ifdef GL_TEST
