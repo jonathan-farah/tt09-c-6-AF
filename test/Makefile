@@ -5,7 +5,7 @@
 SIM ?= icarus
 TOPLEVEL_LANG ?= verilog
 SRC_DIR = $(PWD)/../src
-PROJECT_SOURCES = tt09-C6-project.v
+PROJECT_SOURCES = tt09-C6-array-multiplier.v
 
 ifneq ($(GATES),yes)
 
