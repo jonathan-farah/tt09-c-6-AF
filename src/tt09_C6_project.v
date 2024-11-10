@@ -19,7 +19,6 @@ module tt_um_C6_array_multiplier(
     wire [3:0] m= ui_in[7:4];
     wire [3:0] q= ui_in[3:0];
     wire[7:0] p;
-    module array_mult_structural stage(m,q,p);
   // All output pins must be assigned. If not used, assign to 0.
   assign uo_out  = p;  // Example: ou_out is the sum of ui_in and uio_in
   assign uio_out = 0;
@@ -27,6 +26,7 @@ module tt_um_C6_array_multiplier(
 
   // List all unused inputs to prevent warnings
     wire _unused = &{ena, clk, rst_n,uio_in, 1'b0};
+    array_mult_structural inst1(m,q,p);
 endmodule
 module array_mult_structural(m,q,p);
     input [3:0] m,q;
