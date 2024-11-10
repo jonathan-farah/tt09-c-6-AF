@@ -1,6 +1,6 @@
 # Tiny Tapeout project information
 project:
-  title:        "array-multiplier.v"      # Project title
+  title:        "tt09-C6-array-multiplier"      # Project title
   author:       "Jonathan Farah and Josef Anurov"      # Your name
   discord:      ""      # Your discord username, for communication and automatically assigning you a Tapeout role (optional)
   description:  "4x4 multiplier"      # One line description of what your project does
