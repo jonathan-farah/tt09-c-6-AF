@@ -19,9 +19,9 @@ module tt_um_C6_array_multiplier(
     wire [3:0] m= ui_in[7:4];
     wire [3:0] q= ui_in[3:0];
     wire[7:0] p;
-    array_mult_structural stage(m,q,p);
+    module array_mult_structural stage(m,q,p);
   // All output pins must be assigned. If not used, assign to 0.
-  assign uo_out  = j;  // Example: ou_out is the sum of ui_in and uio_in
+  assign uo_out  = p;  // Example: ou_out is the sum of ui_in and uio_in
   assign uio_out = 0;
   assign uio_oe  = 0;
 
