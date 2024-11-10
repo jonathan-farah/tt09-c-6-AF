@@ -15,8 +15,6 @@ The circuit implements a 4 x 4 array multiplier using manual structural design. 
 
 ## How to test
 We test using some test numbers and checking the output.  Wires C[2:0] are carry bits between the adders. Each w vector (from w1 to w4) represents the result of ANDing each bit of m with a specific bit of q. The add_4bit modules add these partial products together, simulating a ripple-carry addition for each shifted partial product. In terms of assigning the final product is constructed from the individual bits. The MSB comes from C[2]. Bits of partial3, partial2, partial1, and w1 make up the remaining bits, in that order. The implementation of the circuit was then tested using the provided Verilog testbench. The testbench was given a combination of inputs that effectively tested each case to ensure that the multiplier ran correctly.
-![Screenshot 2024-11-01 132325](https://github.com/user-attachments/assets/57418817-74e2-45ce-bf01-9754ea1b4361)
-
 ## External hardware
 
 N/A
